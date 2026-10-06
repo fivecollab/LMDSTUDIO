@@ -1,0 +1,406 @@
+:root {
+  --brun: #7a4c34;
+  --vert: #a5ffdc;
+  --vert-texte: #95fcc5;
+  --gris: #444;
+  --marge: 67px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; margin: 0; padding: 0; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--brun);
+  background: #fff;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { opacity: .7; }
+.m { display: none; }
+
+/* ---------- Carte ---------- */
+.page {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 26px var(--marge) 44px;
+}
+
+/* ---------- En-tête (commun aux deux pages) ---------- */
+.entete {
+  display: grid;
+  grid-template-columns: calc(25vw - 23px) calc(41.667vw - 34px) minmax(0, 1fr) auto;
+  font-size: 23px;
+  line-height: 24.5px;
+  align-items: start;
+}
+.entete .statut { position: relative; }
+.entete .point {
+  position: absolute;
+  left: 119px;
+  top: 34px;
+  display: block;
+  width: 11px;
+  height: 11px;
+}
+.entete .point.m { display: none; }
+.entete .nav { justify-self: end; margin-top: -1px; }
+
+/* ---------- Bouton contact ---------- */
+.contact {
+  flex: none;
+  width: 360px;
+  height: 60px;
+  border-radius: 196px;
+  background: #fff;
+  backdrop-filter: blur(7.5px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 39px;
+  font-size: 23px;
+  line-height: 24.5px;
+  color: var(--brun);
+  transition: background .2s, color .2s;
+}
+.contact:hover {
+  opacity: 1;
+  background: #e6e6e6;
+  color: var(--brun);
+}
+.contact--mobile {
+  display: none !important;
+}
+.contact--desktop {
+  display: flex !important;
+}
+
+/* ---------- Accueil (frame 1440 × 913) ---------- */
+.accueil {
+  background: #fff;
+  padding: 16px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.accueil .page {
+  flex: 1;
+  min-height: calc(100vh - 32px);
+  padding-bottom: 25px;
+  justify-content: space-between;
+  background: #b5ccc4 url("/assets/fond.jpg") center / cover no-repeat;
+}
+.accueil .entete .nav { padding-right: 21px; }
+.pied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.pied-texte {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 691px;
+}
+.pied-instruction {
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: -0.3px;
+  font-weight: 500;
+  color: var(--brun);
+}
+.pied-credit {
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: -0.2px;
+  opacity: 0.85;
+  color: var(--brun);
+}
+.pied p { font-size: 12px; line-height: 24.5px; max-width: 691px; }
+.accueil .contact { margin-right: 5px; }
+
+/* ---------- Collage déplaçable (repris de michaeledmundbrewer.com) ---------- */
+.zone-haut,
+.accueil .page > .zone-haut,
+.accueil .page > .entete,
+.accueil .page > .pied { position: relative; z-index: 2; pointer-events: none; }
+.zone-haut a,
+.accueil .entete a, .accueil .pied a, .accueil .contact { pointer-events: auto; }
+.collage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  isolation: isolate;
+  opacity: 0;
+  transition: opacity .7s ease-out;
+}
+.collage--pret { opacity: 1; }
+.carte {
+  position: absolute;
+  overflow: hidden;
+  background: #000;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  pointer-events: auto;
+}
+.carte img { position: absolute; max-width: none; pointer-events: none; }
+.carte video { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.carte--drag { cursor: grab; }
+.carte--saisie { cursor: grabbing; }
+
+/* Point « in progress » : fondu et clignotement fluide en boucle (accueil et about) */
+@keyframes point-pulse {
+  0% { opacity: 0.15; }
+  50% { opacity: 1; }
+  100% { opacity: 0.15; }
+}
+.entete .point { animation: point-pulse 1.2s ease-in-out infinite; }
+
+/* ---------- About (frame 1440 × 1781) ---------- */
+.apropos {
+  background: #fff;
+  padding: 16px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.apropos .page {
+  flex: 1;
+  min-height: calc(100vh - 32px);
+  background: var(--gris);
+  color: var(--vert);
+  padding-bottom: 25px;
+}
+.apropos .entete .nav { padding-right: 30.86px; }
+.bloc {
+  display: grid;
+  grid-template-columns: calc(25vw - 23px) minmax(0, 907px);
+  font-size: 37px;
+  line-height: 44.5px;
+}
+.bloc h2 {
+  font: inherit;
+  font-size: 23px;
+  line-height: 24.5px;
+  padding-top: 15px;
+}
+.bloc p + p { margin-top: 44.5px; }
+.bloc.presentation { margin-top: 115px; }
+.bloc.services { margin-top: 202.5px; margin-bottom: 114.5px; }
+.apropos .contact { align-self: flex-end; margin: auto 5px 0 0; }
+
+.mobile-actions {
+  display: none !important;
+}
+
+/* ---------- Mobile (frames 390 × 844 / 390 × 1513) ---------- */
+@media (max-width: 900px) {
+  :root { --marge: 22px; }
+  .d { display: none; }
+  .m { display: inline; }
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    height: auto;
+    min-height: 100%;
+  }
+  .accueil, .apropos {
+    background: #fff;
+    padding: 12px 13px 12px 12px;
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .page,
+  .accueil .page,
+  .apropos .page {
+    min-height: calc(100vh - 24px);
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: visible;
+    padding: 15px 22px 27px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .accueil .page {
+    padding-bottom: 40px;
+    /* La page est plus haute que l'écran (collage dans le flux) : on cale le fond
+       sur le premier écran, logo un peu sous le centre. La 2e couche (même image,
+       calée en haut) remplit la bande au-dessus pour garder la texture. */
+    background-color: #b5ccc4;
+    background-image: url("/assets/fond.jpg"), url("/assets/fond.jpg");
+    background-repeat: no-repeat;
+    background-position: center 8vh, center top;
+    background-position: center 8svh, center top;
+    background-size: max(100%, calc((100vh - 24px) * 1.3395)) auto;
+    background-size: max(100%, calc((100svh - 24px) * 1.3395)) auto;
+  }
+
+  .entete,
+  .accueil .entete,
+  .apropos .entete {
+    grid-template-columns: 1fr auto;
+    row-gap: 20px;
+    column-gap: 16px;
+    align-items: start;
+  }
+  .entete .ident {
+    grid-column: 1;
+    grid-row: 1;
+    max-width: none;
+    font-size: 22px;
+    line-height: 25px;
+  }
+  .entete .nav,
+  .accueil .entete .nav,
+  .apropos .entete .nav {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    padding-right: 0;
+    margin-top: 0;
+    font-size: 22px;
+    line-height: 25px;
+  }
+  .entete .metier {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: -0.36px;
+    position: relative;
+    top: 0;
+  }
+  .entete .ville {
+    display: block;
+    padding: 8px 0px 0px;
+  }
+  .entete .statut {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    text-align: right;
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: -0.5px;
+    position: relative;
+    top: 0;
+  }
+  .entete .point { display: none; }
+  .entete .point.m {
+    display: inline-block;
+    position: relative;
+    left: 4px;
+    top: -1px;
+    width: 8px;
+    height: 8px;
+  }
+
+  .mobile-actions {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 24px;
+    position: relative;
+    z-index: 2;
+  }
+  .contact--desktop {
+    display: none !important;
+  }
+  .contact--mobile {
+    display: flex !important;
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 52px;
+    border-radius: 196px;
+    background: #fff;
+    color: var(--brun);
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: background .2s, color .2s;
+  }
+  .contact--mobile:hover {
+    background: #e6e6e6;
+    color: var(--brun);
+  }
+
+  .mobile-instruction {
+    margin-top: 22px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    pointer-events: none;
+  }
+  .mobile-instruction__titre {
+    font-size: 13.5px;
+    line-height: 17px;
+    letter-spacing: -0.2px;
+    font-weight: 500;
+    color: var(--brun);
+    margin: 0;
+  }
+  .mobile-instruction__credit {
+    font-size: 9.5px;
+    line-height: 13.5px;
+    letter-spacing: -0.15px;
+    opacity: 0.85;
+    color: var(--brun);
+    margin: 0;
+  }
+
+  .pied {
+    display: none !important;
+  }
+
+  .zone-haut {
+    order: 1;
+    position: relative;
+    z-index: 500;
+    width: 100%;
+  }
+
+  .carte {
+    touch-action: none;
+  }
+
+  .collage {
+    order: 2;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    min-height: 726px;
+    margin-top: 18px;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .bloc { display: block; font-size: 20px; line-height: 27px; color: var(--vert-texte); max-width: 313px; }
+  .bloc p + p { margin-top: 27px; }
+  .bloc h2 { font-size: 13px; line-height: 24px; padding: 0; margin-bottom: 10px; }
+  .bloc.presentation { margin: 28px 0 0; }
+  .bloc.services { margin: 51px 0 44px; }
+  .apropos .contact {
+    display: flex !important;
+    width: 100%;
+    height: 54px;
+    border-radius: 196px;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    font-size: 20px;
+    margin: auto 0 0;
+  }
+}
