@@ -1,6 +1,11 @@
 node_modules/
 .next/
+.next-*/
 out/
 *.tsbuildinfo
 .env*
 .DS_Store
+!.env.example
+
+# Fichiers sources de la maquette (lourds)
+LMD Studios website/

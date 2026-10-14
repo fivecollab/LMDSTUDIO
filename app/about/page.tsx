@@ -1,57 +1,32 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import Entete from '@/components/Entete';
+import Actions from '@/components/Actions';
+import { getProjets, getReglages } from '@/lib/contenu';
+
+// Régénérée à chaque enregistrement dans l'admin, et au plus tard toutes les 60 s.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'About — L.M.D Studios',
+  title: 'About — LMD Studios',
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [reglages, projets] = await Promise.all([getReglages(), getProjets()]);
+
   return (
-    <div className="apropos">
+    <div className="cadre apropos">
       <main className="page">
-        <header className="entete">
-          <Link className="ident" href="/">
-            <span className="d">
-              John Leon Morales
-              <br />
-            </span>
-            L.M.D Studios
-            <span className="m">
-              <br />
-            </span>
-            {' '}©2026
-          </Link>
-          <div className="metier">
-            <span className="d">
-              Fashion, Design, Art Direction &amp; Consulting.
-              <br />
-            </span>
-            <span className="m">
-              Fashion, Design,
-              <br />
-              Art Direction,
-              <br />
-              and Consulting.
-            </span>
-            <span className="ville">Geneva, Switzerland</span>
-          </div>
-          <div className="statut">
-            Experimentation
-            <br />
-            in progress
-            <img className="point d" src="/assets/point.svg" width={11} height={11} alt="" />
-            <img className="point m" src="/assets/point-mobile.svg" width={8} height={8} alt="" />
-          </div>
-          <Link className="nav" href="/">
-            Back
-          </Link>
-        </header>
+        <Entete
+          nav={[
+            ...(projets.length ? [{ label: 'Work', href: '/work' }] : []),
+            { label: 'Back', href: '/' },
+          ]}
+        />
 
         <section className="bloc presentation">
-          <h2>Hello,</h2>
-          <div>
+          <div className="bloc-texte">
             <p>
-              L.M.D Studios establishes the creative practice and vision of John Leon Morales, a designer with a
+              LMD Studios establishes the creative practice and vision of John Leon Morales, a designer with a
               multicultural background based in Geneva, Switzerland.
             </p>
             <p>
@@ -72,15 +47,15 @@ export default function AboutPage() {
 
         <section className="bloc services">
           <h2>Services</h2>
-          <p>
-            Fashion Design, Product Development, Art Direction, Visual Identity, Websites, Ecommerce, Graphic Design,
-            Brand &amp; Campaign Visuals, and Creative Consultancy.
-          </p>
+          <div className="bloc-texte">
+            <p>
+              Fashion Design, Product Development, Art Direction, Visual Identity, Websites, Ecommerce, Graphic Design,
+              Brand &amp; Campaign Visuals, and Creative Consultancy.
+            </p>
+          </div>
         </section>
 
-        <a className="contact" href="mailto:john@lmdstudios.ch">
-          Let’s talk about your project
-        </a>
+        <Actions reglages={reglages} className="apropos-actions" />
       </main>
     </div>
   );

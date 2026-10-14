@@ -1,82 +1,55 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Collage from '@/components/Collage';
+import Entete from '@/components/Entete';
+import Actions from '@/components/Actions';
+import TraineeCurseur from '@/components/TraineeCurseur';
+import { getCollage, getCurseur, getProjets, getReglages } from '@/lib/contenu';
+import { FORMATS } from '@/lib/types';
+
+// Régénérée à chaque enregistrement dans l'admin, et au plus tard toutes les 60 s.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'John Leon Morales — L.M.D Studios',
+  title: 'John Leon Morales — LMD Studios',
 };
 
-export default function HomePage() {
-  return (
-    <div className="accueil">
-      <main className="page">
-        <Collage />
-        <div className="zone-haut">
-          <header className="entete">
-            <Link className="ident" href="/">
-              <span className="d">
-                John Leon Morales
-                <br />
-              </span>
-              L.M.D Studios
-              <span className="m">
-                <br />
-              </span>
-              {' '}©2026
-            </Link>
-            <div className="metier">
-              <span className="d">
-                Fashion, Design, Art Direction &amp; Consulting.
-                <br />
-              </span>
-              <span className="m">
-                Fashion, Design,
-                <br />
-                Art Direction,
-                <br />
-                and Consulting.
-              </span>
-              <span className="ville">Geneva, Switzerland</span>
-            </div>
-            <div className="statut">
-              Experimentation
-              <br />
-              in progress
-              <img className="point d" src="/assets/point.svg" width={11} height={11} alt="" />
-              <img className="point m" src="/assets/point-mobile.svg" width={8} height={8} alt="" />
-            </div>
-            <Link className="nav" href="/about">
-              About
-            </Link>
-          </header>
+export default async function HomePage() {
+  const [reglages, collage, projets, curseur] = await Promise.all([
+    getReglages(),
+    getCollage(),
+    getProjets(),
+    getCurseur(),
+  ]);
 
-          <div className="mobile-actions">
-            <a className="contact contact--mobile" href="mailto:john@lmdstudios.ch">
-              Let’s talk about your project
-            </a>
-            <div className="mobile-instruction">
-              <p className="mobile-instruction__titre">
-                *Drag around the work to explore the archive.
-              </p>
-              <p className="mobile-instruction__credit">
-                Most of what you see here was built with incredible teams — I&apos;m grateful to have played my part.
-              </p>
-            </div>
+  return (
+    <div
+      className="cadre accueil"
+      // Formats sans image : la consigne « Drag around… » est masquée (voir globals.css).
+      data-vide-desktop={collage.desktop.length ? undefined : ''}
+      data-vide-tablette={collage.tablette.length ? undefined : ''}
+      data-vide-mobile={collage.mobile.length ? undefined : ''}
+    >
+      <main className="page">
+        <Collage collage={collage} />
+        <TraineeCurseur images={curseur} formatsAvecCollage={FORMATS.filter((f) => collage[f].length)} />
+        <div className="zone-haut">
+          <Entete
+            nav={[
+              ...(projets.length ? [{ label: 'Work', href: '/work' }] : []),
+              { label: 'About', href: '/about' },
+            ]}
+          />
+          {/* Tablette / mobile : boutons et consigne sous l'en-tête */}
+          <div className="accueil-actions">
+            <Actions reglages={reglages} className="actions--pile" />
+            <p className="consigne">*Drag around the work to explore the archive.</p>
           </div>
         </div>
 
-        <footer className="pied">
-          <div className="pied-texte">
-            <p className="pied-instruction">
-              *Drag around the work to explore the archive.
-            </p>
-            <p className="pied-credit">
-              Most of what you see here was built with incredible teams — I&apos;m grateful to have played my part.
-            </p>
-          </div>
-          <a className="contact contact--desktop" href="mailto:john@lmdstudios.ch">
-            Let’s talk about your project
-          </a>
+        {/* Desktop : consigne et boutons en bas de la carte */}
+        <footer className="accueil-pied">
+          <p className="consigne">*Drag around the work to explore the archive.</p>
+          <Actions reglages={reglages} />
         </footer>
       </main>
     </div>
