@@ -611,6 +611,9 @@ html:has(.cadre) body { height: 100%; overflow: hidden; }
 @media (max-width: 600px) {
   :root {
     --k: calc(100cqw / 390); --marge: calc(20 * var(--k)); --col-statut: calc(165 * var(--k)); }
+  /* Mobile : plein écran, sans cadre ni coins arrondis */
+  .cadre { padding: 0; }
+  .page { border-radius: 0; }
   .accueil[data-vide-tablette] .accueil-actions .consigne { display: block; }
   .accueil[data-vide-mobile] .accueil-actions .consigne { display: none; }
   .accueil .page {
