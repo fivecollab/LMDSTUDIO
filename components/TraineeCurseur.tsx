@@ -87,7 +87,7 @@ export default function TraineeCurseur({ images, formatsAvecCollage }: { images:
       if (visibles.length >= MAX_VISIBLES) effacer(visibles.shift()!);
 
       const media = images[suivante++ % images.length];
-      const cadre = page!.getBoundingClientRect();
+      const cadre = zone!.getBoundingClientRect();
       const angle = Math.round((Math.random() * 2 - 1) * INCLINAISON_MAX * 100) / 100;
       const echelle = Math.min(1.1, 0.88 + vitesse * 0.3);
 
@@ -112,11 +112,20 @@ export default function TraineeCurseur({ images, formatsAvecCollage }: { images:
       );
     }
 
+    // La carte défile en interne : la zone de la traînée reste calée sur la partie visible.
+    const suivreDefilement = () => {
+      zone.style.transform = page.scrollTop ? `translateY(${page.scrollTop}px)` : '';
+    };
+    suivreDefilement();
+
     page.addEventListener('pointermove', bouger);
     page.addEventListener('pointerleave', toutEffacer);
+    page.addEventListener('scroll', suivreDefilement, { passive: true });
     return () => {
       page.removeEventListener('pointermove', bouger);
       page.removeEventListener('pointerleave', toutEffacer);
+      page.removeEventListener('scroll', suivreDefilement);
+      zone.style.transform = '';
       clearTimeout(minuterieArret);
       minuteries.forEach(clearTimeout);
       zone.innerHTML = '';

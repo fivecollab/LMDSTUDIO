@@ -104,13 +104,11 @@ export default function Collage({ collage }: { collage: CollageType }) {
         ox = (zw - base.w * k) / 2;
         oy = (zh - base.h * k) / 2;
         zone.style.height = '';
-        if (zone.parentElement) zone.parentElement.style.minHeight = '';
       } else {
         // Tablette / mobile : le repère est la page entière, à l'échelle de la largeur.
+        // La carte arrondie garde la hauteur de l'écran : le collage y défile.
         k = zw / base.w;
-        const h = `${Math.round(base.h * k)}px`;
-        zone.style.height = h;
-        if (zone.parentElement) zone.parentElement.style.minHeight = h;
+        zone.style.height = `${Math.round(base.h * k)}px`;
       }
 
       elements.forEach((o) => {

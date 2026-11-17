@@ -61,9 +61,15 @@ a { color: inherit; text-decoration: none; }
 img, video { display: block; }
 .m { display: none; }
 
-/* ---------- Cadre et carte ---------- */
+/* ---------- Cadre et carte ----------
+   Le cadre occupe exactement la fenêtre : la carte arrondie suit sa taille (redimensionnement,
+   barre d'adresse mobile via dvh) et ses quatre contours restent toujours visibles.
+   Le contenu défile à l'intérieur de la carte, jamais la page elle-même. */
+html:has(.cadre),
+html:has(.cadre) body { height: 100%; overflow: hidden; }
 .cadre {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   padding: calc(10 * var(--k));
   background: #fff;
   display: flex;
@@ -71,16 +77,23 @@ img, video { display: block; }
 }
 .page {
   position: relative;
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - calc(20 * var(--k)));
   padding: calc(28 * var(--k)) var(--marge) calc(29 * var(--k));
   border-radius: calc(15 * var(--k));
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
   background: var(--noir);
   color: var(--sable);
 }
+.page::-webkit-scrollbar { display: none; }
+/* Dans un conteneur qui défile, les blocs gardent leur hauteur naturelle */
+.page > * { flex-shrink: 0; }
 
 /* ---------- En-tête ---------- */
 .entete {
@@ -201,8 +214,6 @@ img, video { display: block; }
 
 /* ---------- Accueil ---------- */
 .accueil .page {
-  height: calc(100vh - calc(20 * var(--k)));
-  min-height: calc(600 * var(--k));
   justify-content: space-between;
   background: var(--noir) url('/assets/fond-desktop.png') center / cover no-repeat;
 }
@@ -294,8 +305,6 @@ img, video { display: block; }
 /* ---------- About ---------- */
 .apropos .page {
   background: var(--noir-about);
-  /* « clip » au lieu de « hidden » : permet aux boutons de rester collés en bas de l'écran */
-  overflow: clip;
 }
 .bloc {
   display: grid;
@@ -323,9 +332,10 @@ img, video { display: block; }
   align-self: flex-end;
   margin-top: auto;
   padding-top: calc(71 * var(--k));
-  /* Toujours visibles pendant le défilement (maquette « About » 1440 × 900 : 39 px du bas de l'écran) */
+  /* Toujours visibles pendant le défilement de la carte (maquette « About » 1440 × 900 :
+     39 px du bas de l'écran, soit 29 px du bas de la carte) */
   position: sticky;
-  bottom: calc(39 * var(--k));
+  bottom: calc(29 * var(--k));
   z-index: 3;
   pointer-events: none;
 }
@@ -475,11 +485,11 @@ img, video { display: block; }
   .d { display: none; }
   .m { display: inline; }
 
-  .cadre { padding: 0; }
+  /* Tablette et mobile : même carte arrondie, avec un cadre plus fin */
+  .cadre { padding: 8px; }
   .page {
-    min-height: 100vh;
     padding: calc(19 * var(--k)) var(--marge) calc(39 * var(--k));
-    border-radius: 0;
+    border-radius: calc(15 * var(--k));
   }
 
   .entete {
@@ -508,8 +518,8 @@ img, video { display: block; }
 
   /* Accueil : boutons et consigne sous l'en-tête, collage dans le flux de la page */
   .accueil .page {
-    height: auto;
-    background: var(--noir) url('/assets/fond-tablette.png') center top / 100% auto no-repeat;
+    /* « local » : le fond défile avec le collage à l'intérieur de la carte */
+    background: var(--noir) url('/assets/fond-tablette.png') center top / 100% auto no-repeat local;
   }
   .accueil-pied { display: none; }
   .accueil-actions {
